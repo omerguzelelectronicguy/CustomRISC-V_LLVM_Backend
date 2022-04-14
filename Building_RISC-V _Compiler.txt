@@ -22,7 +22,7 @@ install these
 clone llvm-project
 mkdir build
 cd build
-cmake -DLLVM_TARGETS_TO_BUILD="RISCV" -DLLVM_ENABLE_PROJECTS=clang -G Ninja ../llvm
+cmake -DLLVM_TARGETS_TO_BUILD="RISCV" -DCMAKE_BUILD_TYPE="Release" -DLLVM_ENABLE_PROJECTS="clang;lld" -G Ninja ../llvm
 	The command above (with ninja) will use all the cores.
 	if your ram is high enough (more than 16GB),
 	this process will be much much faster than other alternatives.
