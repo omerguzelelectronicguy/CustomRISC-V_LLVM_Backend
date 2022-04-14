@@ -13,6 +13,28 @@ Note: When suggested vector operation is not worth to use vector hardware it doe
 Note: Only perm function is not converted to the vector operation.
 /////////////////////////////////////////////////////////////////////////
 
+///////////////////////////For building /////////////////////////////////
+install these
+	git
+	Ninja
+	Cmake
+	(be careful that the version must be mathced)
+clone llvm-project
+mkdir build
+cd build
+cmake -DLLVM_TARGETS_TO_BUILD="RISCV" -DLLVM_ENABLE_PROJECTS=clang -G Ninja ../llvm
+	The command above (with ninja) will use all the cores.
+	if your ram is high enough (more than 16GB),
+	this process will be much much faster than other alternatives.
+cmake --build .
 
+Note:
+Compilation will use 40GB when it reaches maximum.
+If your RAM is less than 8 GB 
+	If you dont have a fast SSD find a way to decrease the usage of RAM
+	If you have a fast SSD you should increase the Swap Size at least XXXXX 40
+	As I understand Ninja make the jobs parallel.
 
-
+https://stackoverflow.com/questions/41979952/building-llvm-eats-away-all-my-ram
+https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/412
+/////////////////////////////////////////////////////////////////////////////
