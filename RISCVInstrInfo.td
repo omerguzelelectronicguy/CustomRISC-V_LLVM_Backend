@@ -1007,7 +1007,7 @@ class PatGprUimmLog2XLen<SDPatternOperator OpNode, RVInstIShift Inst>
 /// Predicates
 
 def IsOrAdd: PatFrag<(ops node:$A, node:$B), (or node:$A, node:$B), [{
-  return isOrEquivalentTo(AddN);
+  return isOrEquivalentToAdd(N);
 }]>;
 def assertsexti32 : PatFrag<(ops node:$src), (assertsext node:$src), [{
   return cast<VTSDNode>(N->getOperand(1))->getVT().bitsLE(MVT::i32);
@@ -1550,103 +1550,103 @@ def MLA : Instruction {
 }
 
 
-/*sladd rd,rs1,rs2			0010000	....	....	010	....	0110011
+// /*sladd rd,rs1,rs2			0010000	....	....	010	....	0110011
 
-	It shifts rs1 one bit left. Then, it writes to rd after it adds with rs2.*/
-// def sladd : Instruction {
-//     bits<32> Inst;
-//     bits<32> SoftFail = 0;
-//     bits<5> rs2;
-//     bits<5> rs1;
-//     bits<5> rd;
-//     let Namespace = "RISCV";
-//     let hasSideEffects = 0;
-//     let mayLoad = 0;
-//     let mayStore = 0;
-//     let Size = 4;
-//     let Inst{31-25} = 0b0010000; /*funct7*/ //I will change this and funct3
-//     let Inst{24-20} = rs2; /*rs2*/
-//     let Inst{19-15} = rs1; /*rs1*/
-//     let Inst{14-12} = 0b010; /*funct3*/
-//     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0110011; /*opcode*/
+// 	It shifts rs1 one bit left. Then, it writes to rd after it adds with rs2.*/
+def sladd : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs2;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0010000; /*funct7*/ //I will change this and funct3
+    let Inst{24-20} = rs2; /*rs2*/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b010; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
 
-//     dag OutOperandList = (outs GPR:$rd);
-//     dag InOperandList = (ins GPR:$rs1 ,  GPR:$rs2);
-//     let AsmString = "sladd\t$rd, $rs1, $rs2";
-// }
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1 ,  GPR:$rs2);
+    let AsmString = "sladd\t$rd, $rs1, $rs2";
+}
 
 // /*pkg rd, rs1, rs2			0000100	....	....	100	....	0110011
 
 // 	It writes the most significiant half of rs2 to same place of rd and the least significiant half of rs1 to same place of rd.
 // */
-// def pkg : Instruction {
-//     bits<32> Inst;
-//     bits<32> SoftFail = 0;
-//     bits<5> rs2;
-//     bits<5> rs1;
-//     bits<5> rd;
-//     let Namespace = "RISCV";
-//     let hasSideEffects = 0;
-//     let mayLoad = 0;
-//     let mayStore = 0;
-//     let Size = 4;
-//     let Inst{31-25} = 0b0000100; /*funct7*/ //I will change this and funct3
-//     let Inst{24-20} = rs2; /*rs2*/
-//     let Inst{19-15} = rs1; /*rs1*/
-//     let Inst{14-12} = 0b100; /*funct3*/
-//     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0110011; /*opcode*/
+def pkg : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs2;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0000100; /*funct7*/ //I will change this and funct3
+    let Inst{24-20} = rs2; /*rs2*/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b100; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
 
-//     dag OutOperandList = (outs GPR:$rd);
-//     dag InOperandList = (ins GPR:$rs1 ,  GPR:$rs2);
-//     let AsmString = "pkg\t$rd, $rs1, $rs2";
-// }
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1 ,  GPR:$rs2);
+    let AsmString = "pkg\t$rd, $rs1, $rs2";
+}
 
-//def cntp : Instruction {
-//     bits<32> Inst;
-//     bits<32> SoftFail = 0;
-//     bits<5> rs1;
-//     bits<5> rd;
-//     let Namespace = "RISCV";
-//     let hasSideEffects = 0;
-//     let mayLoad = 0;
-//     let mayStore = 0;
-//     let Size = 4;
-//     let Inst{31-25} = 0b0110000; /*funct7*/ //I will change this and funct3
-//     let Inst{24-20} = 00010; /**/
-//     let Inst{19-15} = rs1; /*rs1*/
-//     let Inst{14-12} = 0b001; /*funct3*/
-//     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0010011; /*opcode*/
+def cntp : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0110000; /*funct7*/ //I will change this and funct3
+    let Inst{24-20} = 00010; /**/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b001; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
 
-//     dag OutOperandList = (outs GPR:$rd);
-//     dag InOperandList = (ins GPR:$rs1);
-//     let AsmString = "cntp\t$rd, $rs1";
-// }
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1);
+    let AsmString = "cntp\t$rd, $rs1";
+}
 
-// def hmdst : Instruction {
-//     bits<32> Inst;
-//     bits<32> SoftFail = 0;
-//     bits<5> rs2;
-//     bits<5> rs1;
-//     bits<5> rd;
-//     let Namespace = "RISCV";
-//     let hasSideEffects = 0;
-//     let mayLoad = 0;
-//     let mayStore = 0;
-//     let Size = 4;
-//     let Inst{31-25} = 0b0000101; /*funct7*/ //I will change this and funct3
-//     let Inst{24-20} = rs2; /*rs2*/
-//     let Inst{19-15} = rs1; /*rs1*/
-//     let Inst{14-12} = 0b001; /*funct3*/
-//     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0110011; /*opcode*/
+def hmdst : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs2;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0000101; /*funct7*/ //I will change this and funct3
+    let Inst{24-20} = rs2; /*rs2*/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b001; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
 
-//     dag OutOperandList = (outs GPR:$rd);
-//     dag InOperandList = (ins GPR:$rs1,  GPR:$rs2);
-//     let AsmString = "hmdst\t$rd, $rs1, $rs2";
-// }
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1,  GPR:$rs2);
+    let AsmString = "hmdst\t$rd, $rs1, $rs2";
+}
 
 // def rvrs : Instruction {
 //     bits<32> Inst;
@@ -1663,66 +1663,68 @@ def MLA : Instruction {
 //     let Inst{19-15} = rs1; /*rs1*/
 //     let Inst{14-12} = 0b101; /*funct3*/
 //     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0010011; /*opcode*/
+//     let Inst{6-0} = 0b0000000; /*opcode*/
 
 //     dag OutOperandList = (outs GPR:$rd);
 //     dag InOperandList = (ins GPR:$rs1);
 //     let AsmString = "rvrs\t$rd, $rs1";
 // }
 
-// //pattern for sladd
-// def : Pat<  (add (SLLI GPR:$src1, 1), GPR:$src2),
-//             (sladd GPR:$src1, GPR:$src2)>;
+//pattern for sladd
+def : Pat<  (add (shl GPR:$src1, (i32 1)), GPR:$src2),
+            (sladd GPR:$src1, GPR:$src2)>;
+            
 
-// //pattern for pkg
-// def : Pat<  (or (SRLI GPR:$src1, 16), (ANDI GPR:$src2, 0xffff0000)),
-//             (pkg GPR:$src1, GPR:$src2)>;
+//pattern for pkg
 
+/*def : Pat<  (or (lhu GPR:$src1), (shl GPR:$src2, (i32 16))),
+            (pkg GPR:$src1, GPR:$src2)>;
+*/
 //pattern for cntp
-/*def : Pat<  
+def : Pat<  
     (add
         (add
             (add
                 (add
                     (add
-                        (and(srl GPR:$src1, 0),1),
-                        (and(srl GPR:$src1, 1),1)
+                        (and(srl GPR:$src1, (i32 0)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 1)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 2),1),
-                        (and(srl GPR:$src1, 3),1)
+                        (and(srl GPR:$src1, (i32 2)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 3)),(i32 1))
                     )
                 ),
                 (add
                     (add
-                        (and(srl GPR:$src1, 4),1),
-                        (and(srl GPR:$src1, 5),1)
+                        (and(srl GPR:$src1, (i32 4)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 5)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 6),1),
-                        (and(srl GPR:$src1, 7),1)
+                        (and(srl GPR:$src1, (i32 6)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 7)),(i32 1))
                     )
                 )
             ),
             (add
                 (add
                     (add
-                        (and(srl GPR:$src1, 8),1),
-                        (and(srl GPR:$src1, 9),1)
+                        (and(srl GPR:$src1, (i32 8)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 9)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 10),1),
-                        (and(srl GPR:$src1, 11),1)
+                        (and(srl GPR:$src1, (i32 10)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 11)),(i32 1))
                     )
                 ),
                 (add
                     (add
-                        (and(srl GPR:$src1, 12),1),
-                        (and(srl GPR:$src1, 13),1)
+                        (and(srl GPR:$src1, (i32 12)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 13)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 14),1),
-                        (and(srl GPR:$src1, 15),1)
+                        (and(srl GPR:$src1, (i32 14)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 15)),(i32 1))
                     )
                 )
             )
@@ -1731,70 +1733,70 @@ def MLA : Instruction {
             (add
                 (add
                     (add
-                        (and(srl GPR:$src1, 16),1),
-                        (and(srl GPR:$src1, 17),1)
+                        (and(srl GPR:$src1, (i32 16)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 17)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 18),1),
-                        (and(srl GPR:$src1, 19),1)
+                        (and(srl GPR:$src1, (i32 18)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 19)),(i32 1))
                     )
                 ),
                 (add
                     (add
-                        (and(srl GPR:$src1, 20),1),
-                        (and(srl GPR:$src1, 21),1)
+                        (and(srl GPR:$src1, (i32 20)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 21)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 22),1),
-                        (and(srl GPR:$src1, 23),1)
+                        (and(srl GPR:$src1, (i32 22)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 23)),(i32 1))
                     )
                 )
             ),
             (add
                 (add
                     (add
-                        (and(srl GPR:$src1, 24),1),
-                        (and(srl GPR:$src1, 25),1)
+                        (and(srl GPR:$src1, (i32 24)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 25)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 26),1),
-                        (and(srl GPR:$src1, 27),1)
+                        (and(srl GPR:$src1, (i32 26)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 27)),(i32 1))
                     )
                 ),
                 (add
                     (add
-                        (and(srl GPR:$src1, 28),1),
-                        (and(srl GPR:$src1, 29),1)
+                        (and(srl GPR:$src1, (i32 28)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 29)),(i32 1))
                     ),
                     (add
-                        (and(srl GPR:$src1, 30),1),
-                        (and(srl GPR:$src1, 31),1)
+                        (and(srl GPR:$src1, (i32 30)),(i32 1)),
+                        (and(srl GPR:$src1, (i32 31)),(i32 1))
                     )
                 )
             )
         )
     )
     ,
-      (cntp GPR:$src1)>;*/
-/* same function is exist
+      (cntp GPR:$src1)>;
+
 //pattern for hmdst
-def : Pat<  (cntp (xor GPR:$src1, GPR:$src2)),
+/*def : Pat<  (cntp (xor GPR:$src1, GPR:$src2)),
             (hmdst GPR:$src1, GPR:$src2)>;
-
-//pattern for rvrs
-def : Pat<
-    (or 
-        ( or
-          (SRLI (ANDI GPR:$src1, 0xff000000), 24), (SRLI (ANDI GPR:$src1, 0x00ff0000), 8)
-        ),
-        ( or  
-          (SLLI (ANDI GPR:$src1, 0x0000ff00), 8),  (SLLI (ANDI GPR:$src1, 0x000000ff), 24)
-        )
-    ),
-    (rvrs GPR:$src1)
-  >;  
-
 */
+//pattern for rvrs
+// def : Pat<
+//     (or 
+//         ( or
+//           (srl (and GPR:$src1, 0xff000000), 24), (srl (and GPR:$src1, 0x00ff0000), 8)
+//         ),
+//         ( or  
+//           (sll (and GPR:$src1, 0x0000ff00), 8),  (sll (and GPR:$src1, 0x000000ff), 24)
+//         )
+//     ),
+//     (rvrs GPR:$src1)
+//   >;  
+
+
 //patern for MLA -- This is for the first trial-- it will be deleted at the end.
 def : Pat<  (add (mul GPR:$src1, GPR:$src2), GPR:$src3),
             (MLA GPR:$src1, GPR:$src2, GPR:$src3)>;
