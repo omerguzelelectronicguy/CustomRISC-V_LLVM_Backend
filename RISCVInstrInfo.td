@@ -1648,27 +1648,27 @@ def hmdst : Instruction {
     let AsmString = "hmdst\t$rd, $rs1, $rs2";
 }
 
-// def rvrs : Instruction {
-//     bits<32> Inst;
-//     bits<32> SoftFail = 0;
-//     bits<5> rs1;
-//     bits<5> rd;
-//     let Namespace = "RISCV";
-//     let hasSideEffects = 0;
-//     let mayLoad = 0;
-//     let mayStore = 0;
-//     let Size = 4;
-//     let Inst{31-25} = 0b0110101; /*funct7*/ //I will change this and funct3
-//     let Inst{24-20} = 0b11000; /**/
-//     let Inst{19-15} = rs1; /*rs1*/
-//     let Inst{14-12} = 0b101; /*funct3*/
-//     let Inst{11-7} = rd; 
-//     let Inst{6-0} = 0b0000000; /*opcode*/
+def rvrs : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0110101; /*funct7*/ //I will change this and funct3
+    let Inst{24-20} = 0b11000; /**/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b101; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
 
-//     dag OutOperandList = (outs GPR:$rd);
-//     dag InOperandList = (ins GPR:$rs1);
-//     let AsmString = "rvrs\t$rd, $rs1";
-// }
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1);
+    let AsmString = "rvrs\t$rd, $rs1";
+}
 
 //pattern for sladd
 def : Pat<  (add (shl GPR:$src1, (i32 1)), GPR:$src2),
@@ -1677,11 +1677,13 @@ def : Pat<  (add (shl GPR:$src1, (i32 1)), GPR:$src2),
 
 //pattern for pkg
 
-/*def : Pat<  (or (lhu GPR:$src1), (shl GPR:$src2, (i32 16))),
+def : Pat<  (or 
+                (srl GPR:$src1, (i32 16)), (shl GPR:$src2, (i32 16))
+            ),
             (pkg GPR:$src1, GPR:$src2)>;
-*/
+
 //pattern for cntp
-def : Pat<  
+/*def : Pat<  
     (add
         (add
             (add
@@ -1779,22 +1781,29 @@ def : Pat<
     ,
       (cntp GPR:$src1)>;
 
-//pattern for hmdst
+
+*///pattern for hmdst
 /*def : Pat<  (cntp (xor GPR:$src1, GPR:$src2)),
             (hmdst GPR:$src1, GPR:$src2)>;
 */
-//pattern for rvrs
-// def : Pat<
-//     (or 
-//         ( or
-//           (srl (and GPR:$src1, 0xff000000), 24), (srl (and GPR:$src1, 0x00ff0000), 8)
-//         ),
-//         ( or  
-//           (sll (and GPR:$src1, 0x0000ff00), 8),  (sll (and GPR:$src1, 0x000000ff), 24)
-//         )
-//     ),
-//     (rvrs GPR:$src1)
-//   >;  
+
+def : Pat< //pattern for rvrs
+      (or 
+        ( or
+          (srl GPR:$src1, (i32 24)),
+          (and 
+            (srl GPR:$src1, (i32 8)), (i32 0x0000ff00) 
+          )
+        ),
+        ( or  
+          (and
+            (shl GPR:$src1, (i32 8)), (i32 0x00ff0000)
+            ),
+          (shl GPR:$src1, (i32 24))
+        )
+    ),
+    (rvrs GPR:$src1)
+  >;  
 
 
 //patern for MLA -- This is for the first trial-- it will be deleted at the end.
