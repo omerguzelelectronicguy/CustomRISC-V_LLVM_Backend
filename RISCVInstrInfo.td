@@ -1670,26 +1670,25 @@ def rvrs : Instruction {
     let AsmString = "rvrs\t$rd, $rs1";
 }
 
-//pattern for sladd
+//pattern for sladd // it is working now.
 def : Pat<  (add (shl GPR:$src1, (i32 1)), GPR:$src2),
             (sladd GPR:$src1, GPR:$src2)>;
             
 
-//pattern for pkg
-
+//pattern for pkg // it is working now.
 def : Pat<  (or 
                 (srl GPR:$src1, (i32 16)), (shl GPR:$src2, (i32 16))
             ),
             (pkg GPR:$src1, GPR:$src2)>;
 
 //pattern for cntp
-/*def : Pat<  
+/*def : Pat<
     (add
         (add
             (add
                 (add
                     (add
-                        (and(srl GPR:$src1, (i32 0)),(i32 1)),
+                        (and GPR:$src1, (i32 1)),
                         (and(srl GPR:$src1, (i32 1)),(i32 1))
                     ),
                     (add
@@ -1780,6 +1779,7 @@ def : Pat<  (or
     )
     ,
       (cntp GPR:$src1)>;
+
 
 
 *///pattern for hmdst
