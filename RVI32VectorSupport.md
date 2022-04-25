@@ -1,4 +1,4 @@
-///////////////////VECTOR OPERATINS///////////////////////////////////
+# VECTOR OPERATIONS
 [This link](https://godbolt.org/z/dfPrnv1cK) is the online compiler which is set for rv64gcv.
 
 LLVM+clang14 compressed file is downloaded and extracted from [this website](https://github.com/llvm/llvm-project/releases/tag/llvmorg-14.0.0).
@@ -12,4 +12,3 @@ Note: When suggested vector operation is not worth to use vector hardware it doe
 
 Note: Only perm function is not converted to the vector operation for my cases(I didn't use all the operations).
 I couldn't add the stdio library in the code but there are solutions in the net I didn't apply.
-/////////////////////////////////////////////////////////////////////////
