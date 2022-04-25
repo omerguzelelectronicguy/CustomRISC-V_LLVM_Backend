@@ -1,12 +1,14 @@
 # CustomRISC-V_LLVM_Backend
-## This is a simple tutorial to show LLVM-Backend Steps.
+I am a beginner for LLVM Backend. I explained the steps and progress in a beginner side of view. In this work, there might be mistakes or unnecessary parts that are not serve the actual porpuse. I'm always happy with any warning or changes about mistakes.
+This work includes the compiler of RISCV CPU, Vector Support for RISCV CPU, and LLVM Backend for RISCV for custom instructions. I tried to explain them in different files in the main directory. I still left a general LLVM build for the main page below.
+
+## How to build?
 
 First Step is to build LLVM infrastructure for target CPU in the host computer.
 The source code can be downloaded from here: https://github.com/llvm/llvm-project
 or released version for the host cmoputer can be downloaded, if it is available.
 If you download the source code, you should build. No need, if you downloaded release.
 
-## How to build?
 
 For the backend, clang and llc is needed. Clang is to create IR (Intermediate Representation). LLC will convert the IR to the assembly according to the Target CPU spec and added instructions.(LLVM Backend will effect the LLC.)
 
