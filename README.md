@@ -3,7 +3,7 @@
 
 First Step is to build LLVM infrastructure for target CPU in the host computer.
 The source code can be downloaded from here: https://github.com/llvm/llvm-project
-Released version for the host cmoputer can be downloaded, if it is available.
+or released version for the host cmoputer can be downloaded, if it is available.
 If you download the source code, you should build. No need, if you downloaded release.
 
 ## How to build?
