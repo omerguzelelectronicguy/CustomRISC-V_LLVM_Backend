@@ -1524,6 +1524,9 @@ include "RISCVInstrInfoZfh.td"
 //===----------------------------------------------------------------------===//
 // Custom extensions
 //===----------------------------------------------------------------------===//
+// I add my instruction definitions and patterns below. 
+//I used some different opcode or funct7 than I stated in the explaination files.
+//Because there were conflict.
 
 def MLA : Instruction {
     bits<32> Inst;
@@ -1536,7 +1539,7 @@ def MLA : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0000000; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0000000; /*funct7*/ 
     let Inst{24-20} = rs2; /*rs2*/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b000; /*funct3*/
@@ -1549,10 +1552,6 @@ def MLA : Instruction {
     let AsmString = "mla\t$rd, $rs1, $rs2";
 }
 
-
-// /*sladd rd,rs1,rs2			0010000	....	....	010	....	0110011
-
-// 	It shifts rs1 one bit left. Then, it writes to rd after it adds with rs2.*/
 def sladd : Instruction {
     bits<32> Inst;
     bits<32> SoftFail = 0;
@@ -1564,7 +1563,7 @@ def sladd : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0010000; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0010000; /*funct7*/ 
     let Inst{24-20} = rs2; /*rs2*/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b010; /*funct3*/
@@ -1576,10 +1575,6 @@ def sladd : Instruction {
     let AsmString = "sladd\t$rd, $rs1, $rs2";
 }
 
-// /*pkg rd, rs1, rs2			0000100	....	....	100	....	0110011
-
-// 	It writes the most significiant half of rs2 to same place of rd and the least significiant half of rs1 to same place of rd.
-// */
 def pkg : Instruction {
     bits<32> Inst;
     bits<32> SoftFail = 0;
@@ -1591,7 +1586,7 @@ def pkg : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0000100; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0000100; /*funct7*/ 
     let Inst{24-20} = rs2; /*rs2*/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b100; /*funct3*/
@@ -1613,7 +1608,7 @@ def cntp : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0110000; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0110000; /*funct7*/ 
     let Inst{24-20} = 00010; /**/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b001; /*funct3*/
@@ -1623,6 +1618,27 @@ def cntp : Instruction {
     dag OutOperandList = (outs GPR:$rd);
     dag InOperandList = (ins GPR:$rs1);
     let AsmString = "cntp\t$rd, $rs1";
+}
+def cntz : Instruction {
+    bits<32> Inst;
+    bits<32> SoftFail = 0;
+    bits<5> rs1;
+    bits<5> rd;
+    let Namespace = "RISCV";
+    let hasSideEffects = 0;
+    let mayLoad = 0;
+    let mayStore = 0;
+    let Size = 4;
+    let Inst{31-25} = 0b0110000; /*funct7*/ 
+    let Inst{24-20} = 00001; /**/
+    let Inst{19-15} = rs1; /*rs1*/
+    let Inst{14-12} = 0b001; /*funct3*/
+    let Inst{11-7} = rd; 
+    let Inst{6-0} = 0b0000000; /*opcode*/
+
+    dag OutOperandList = (outs GPR:$rd);
+    dag InOperandList = (ins GPR:$rs1);
+    let AsmString = "cntz\t$rd, $rs1";
 }
 
 def hmdst : Instruction {
@@ -1636,7 +1652,7 @@ def hmdst : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0000101; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0000101; /*funct7*/ 
     let Inst{24-20} = rs2; /*rs2*/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b001; /*funct3*/
@@ -1658,7 +1674,7 @@ def rvrs : Instruction {
     let mayLoad = 0;
     let mayStore = 0;
     let Size = 4;
-    let Inst{31-25} = 0b0110101; /*funct7*/ //I will change this and funct3
+    let Inst{31-25} = 0b0110101; /*funct7*/ 
     let Inst{24-20} = 0b11000; /**/
     let Inst{19-15} = rs1; /*rs1*/
     let Inst{14-12} = 0b101; /*funct3*/
@@ -1670,123 +1686,30 @@ def rvrs : Instruction {
     let AsmString = "rvrs\t$rd, $rs1";
 }
 
-//pattern for sladd // it is working now.
+//pattern for sladd 
 def : Pat<  (add (shl GPR:$src1, (i32 1)), GPR:$src2),
             (sladd GPR:$src1, GPR:$src2)>;
             
 
-//pattern for pkg // it is working now.
+//pattern for pkg 
 def : Pat<  (or 
                 (srl GPR:$src1, (i32 16)), (shl GPR:$src2, (i32 16))
             ),
             (pkg GPR:$src1, GPR:$src2)>;
 
 //pattern for cntp
-/*def : Pat<
-    (add
-        (add
-            (add
-                (add
-                    (add
-                        (and GPR:$src1, (i32 1)),
-                        (and(srl GPR:$src1, (i32 1)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 2)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 3)),(i32 1))
-                    )
-                ),
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 4)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 5)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 6)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 7)),(i32 1))
-                    )
-                )
-            ),
-            (add
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 8)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 9)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 10)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 11)),(i32 1))
-                    )
-                ),
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 12)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 13)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 14)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 15)),(i32 1))
-                    )
-                )
-            )
-        ),
-        (add
-            (add
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 16)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 17)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 18)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 19)),(i32 1))
-                    )
-                ),
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 20)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 21)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 22)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 23)),(i32 1))
-                    )
-                )
-            ),
-            (add
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 24)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 25)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 26)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 27)),(i32 1))
-                    )
-                ),
-                (add
-                    (add
-                        (and(srl GPR:$src1, (i32 28)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 29)),(i32 1))
-                    ),
-                    (add
-                        (and(srl GPR:$src1, (i32 30)),(i32 1)),
-                        (and(srl GPR:$src1, (i32 31)),(i32 1))
-                    )
-                )
-            )
-        )
-    )
-    ,
-      (cntp GPR:$src1)>;
+def : Pat< (ctpop GPR:$src1), (cntp GPR:$src1) >;//pcnt -> cpop name changed 
+
+//pattern for cntz
+def : Pat< (ctlz GPR:$src1), (cntz GPR:$src1) >;
 
 
 
-*///pattern for hmdst
-/*def : Pat<  (cntp (xor GPR:$src1, GPR:$src2)),
+//pattern for hmdst
+def : Pat<  (ctpop (xor GPR:$src1, GPR:$src2)),
             (hmdst GPR:$src1, GPR:$src2)>;
-*/
 
+ 
 def : Pat< //pattern for rvrs
       (or 
         ( or
