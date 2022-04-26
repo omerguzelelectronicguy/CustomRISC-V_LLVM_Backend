@@ -301,8 +301,10 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
     }
   } else {
     setOperationAction(ISD::CTTZ, XLenVT, Expand);
-    setOperationAction(ISD::CTLZ, XLenVT, Expand);
-    setOperationAction(ISD::CTPOP, XLenVT, Expand);
+    //setOperationAction(ISD::CTLZ, XLenVT, Expand);
+    setOperationAction(ISD::CTLZ, MVT::i32, Legal); // I add this line
+    //setOperationAction(ISD::CTPOP, XLenVT, Expand);
+    setOperationAction(ISD::CTPOP, MVT::i32, Legal);// I add this line
   }
  
   if (Subtarget.hasStdExtZbt()) {
@@ -11041,6 +11043,6 @@ namespace RISCVVIntrinsicsTable {
 
 } // namespace RISCVVIntrinsicsTable
 
-}
+} 
 
 // namespace llvm
