@@ -12,38 +12,38 @@ sladd:                                  # @sladd
 	.cfi_sections .debug_frame
 	.cfi_startproc
 # %bb.0:
-	addi	sp, sp, -32
-	.cfi_def_cfa_offset 32
-	sw	ra, 28(sp)                      # 4-byte Folded Spill
-	sw	s0, 24(sp)                      # 4-byte Folded Spill
-	.cfi_offset ra, -4
-	.cfi_offset s0, -8
-	addi	s0, sp, 32
-	.cfi_def_cfa s0, 0
-	sw	a0, -12(s0)
-	sw	a1, -16(s0)
-	sw	a2, -20(s0)
-.Ltmp0:
-	.loc	0 6 12 prologue_end             # sladd.c:6:12
-	lw	a0, -12(s0)
-	.loc	0 6 19 is_stmt 0                # sladd.c:6:19
-	lw	a1, -16(s0)
-	.loc	0 6 16                          # sladd.c:6:16
+	#DEBUG_VALUE: sladd:rs1 <- $x10
+	#DEBUG_VALUE: sladd:rs2 <- $x11
+	#DEBUG_VALUE: sladd:rd <- $x12
+	.loc	0 6 16 prologue_end             # sladd.c:6:16
 	sladd	a0, a1, a0
-	.loc	0 6 6                           # sladd.c:6:6
-	lw	a1, -20(s0)
-	.loc	0 6 10                          # sladd.c:6:10
-	sw	a0, 0(a1)
+.Ltmp0:
+	.loc	0 6 10 is_stmt 0                # sladd.c:6:10
+	sw	a0, 0(a2)
 	.loc	0 7 1 is_stmt 1                 # sladd.c:7:1
-	lw	ra, 28(sp)                      # 4-byte Folded Reload
-	lw	s0, 24(sp)                      # 4-byte Folded Reload
-	addi	sp, sp, 32
 	ret
 .Ltmp1:
 .Lfunc_end0:
 	.size	sladd, .Lfunc_end0-sladd
 	.cfi_endproc
                                         # -- End function
+	.section	.debug_loclists,"",@progbits
+	.word	.Ldebug_list_header_end0-.Ldebug_list_header_start0 # Length
+.Ldebug_list_header_start0:
+	.half	5                               # Version
+	.byte	4                               # Address size
+	.byte	0                               # Segment selector size
+	.word	1                               # Offset entry count
+.Lloclists_table_base0:
+	.word	.Ldebug_loc0-.Lloclists_table_base0
+.Ldebug_loc0:
+	.byte	4                               # DW_LLE_offset_pair
+	.uleb128 .Lfunc_begin0-.Lfunc_begin0    #   starting offset
+	.uleb128 .Ltmp0-.Lfunc_begin0           #   ending offset
+	.byte	1                               # Loc expr size
+	.byte	90                              # DW_OP_reg10
+	.byte	0                               # DW_LLE_end_of_list
+.Ldebug_list_header_end0:
 	.section	.debug_abbrev,"",@progbits
 	.byte	1                               # Abbreviation Code
 	.byte	17                              # DW_TAG_compile_unit
@@ -65,6 +65,8 @@ sladd:                                  # @sladd
 	.byte	18                              # DW_AT_high_pc
 	.byte	6                               # DW_FORM_data4
 	.byte	115                             # DW_AT_addr_base
+	.byte	23                              # DW_FORM_sec_offset
+	.ascii	"\214\001"                      # DW_AT_loclists_base
 	.byte	23                              # DW_FORM_sec_offset
 	.byte	0                               # EOM(1)
 	.byte	0                               # EOM(2)
@@ -88,6 +90,8 @@ sladd:                                  # @sladd
 	.byte	6                               # DW_FORM_data4
 	.byte	64                              # DW_AT_frame_base
 	.byte	24                              # DW_FORM_exprloc
+	.byte	122                             # DW_AT_call_all_calls
+	.byte	25                              # DW_FORM_flag_present
 	.byte	3                               # DW_AT_name
 	.byte	37                              # DW_FORM_strx1
 	.byte	58                              # DW_AT_decl_file
@@ -104,7 +108,7 @@ sladd:                                  # @sladd
 	.byte	5                               # DW_TAG_formal_parameter
 	.byte	0                               # DW_CHILDREN_no
 	.byte	2                               # DW_AT_location
-	.byte	24                              # DW_FORM_exprloc
+	.byte	34                              # DW_FORM_loclistx
 	.byte	3                               # DW_AT_name
 	.byte	37                              # DW_FORM_strx1
 	.byte	58                              # DW_AT_decl_file
@@ -116,6 +120,21 @@ sladd:                                  # @sladd
 	.byte	0                               # EOM(1)
 	.byte	0                               # EOM(2)
 	.byte	5                               # Abbreviation Code
+	.byte	5                               # DW_TAG_formal_parameter
+	.byte	0                               # DW_CHILDREN_no
+	.byte	2                               # DW_AT_location
+	.byte	24                              # DW_FORM_exprloc
+	.byte	3                               # DW_AT_name
+	.byte	37                              # DW_FORM_strx1
+	.byte	58                              # DW_AT_decl_file
+	.byte	11                              # DW_FORM_data1
+	.byte	59                              # DW_AT_decl_line
+	.byte	11                              # DW_FORM_data1
+	.byte	73                              # DW_AT_type
+	.byte	19                              # DW_FORM_ref4
+	.byte	0                               # EOM(1)
+	.byte	0                               # EOM(2)
+	.byte	6                               # Abbreviation Code
 	.byte	15                              # DW_TAG_pointer_type
 	.byte	0                               # DW_CHILDREN_no
 	.byte	73                              # DW_AT_type
@@ -141,47 +160,45 @@ sladd:                                  # @sladd
 	.byte	0                               # DW_AT_low_pc
 	.word	.Lfunc_end0-.Lfunc_begin0       # DW_AT_high_pc
 	.word	.Laddr_table_base0              # DW_AT_addr_base
-	.byte	2                               # Abbrev [2] 0x23:0x4 DW_TAG_base_type
+	.word	.Lloclists_table_base0          # DW_AT_loclists_base
+	.byte	2                               # Abbrev [2] 0x27:0x4 DW_TAG_base_type
 	.byte	3                               # DW_AT_name
 	.byte	7                               # DW_AT_encoding
 	.byte	4                               # DW_AT_byte_size
-	.byte	3                               # Abbrev [3] 0x27:0x2d DW_TAG_subprogram
+	.byte	3                               # Abbrev [3] 0x2b:0x29 DW_TAG_subprogram
 	.byte	0                               # DW_AT_low_pc
 	.word	.Lfunc_end0-.Lfunc_begin0       # DW_AT_high_pc
 	.byte	1                               # DW_AT_frame_base
-	.byte	88
+	.byte	82
+                                        # DW_AT_call_all_calls
 	.byte	4                               # DW_AT_name
 	.byte	0                               # DW_AT_decl_file
 	.byte	5                               # DW_AT_decl_line
                                         # DW_AT_prototyped
                                         # DW_AT_external
-	.byte	4                               # Abbrev [4] 0x32:0xb DW_TAG_formal_parameter
-	.byte	2                               # DW_AT_location
-	.byte	145
-	.byte	116
+	.byte	4                               # Abbrev [4] 0x36:0x9 DW_TAG_formal_parameter
+	.byte	0                               # DW_AT_location
 	.byte	5                               # DW_AT_name
 	.byte	0                               # DW_AT_decl_file
 	.byte	5                               # DW_AT_decl_line
-	.word	35                              # DW_AT_type
-	.byte	4                               # Abbrev [4] 0x3d:0xb DW_TAG_formal_parameter
-	.byte	2                               # DW_AT_location
-	.byte	145
-	.byte	112
+	.word	39                              # DW_AT_type
+	.byte	5                               # Abbrev [5] 0x3f:0xa DW_TAG_formal_parameter
+	.byte	1                               # DW_AT_location
+	.byte	91
 	.byte	6                               # DW_AT_name
 	.byte	0                               # DW_AT_decl_file
 	.byte	5                               # DW_AT_decl_line
-	.word	35                              # DW_AT_type
-	.byte	4                               # Abbrev [4] 0x48:0xb DW_TAG_formal_parameter
-	.byte	2                               # DW_AT_location
-	.byte	145
-	.byte	108
+	.word	39                              # DW_AT_type
+	.byte	5                               # Abbrev [5] 0x49:0xa DW_TAG_formal_parameter
+	.byte	1                               # DW_AT_location
+	.byte	92
 	.byte	7                               # DW_AT_name
 	.byte	0                               # DW_AT_decl_file
 	.byte	5                               # DW_AT_decl_line
 	.word	84                              # DW_AT_type
 	.byte	0                               # End Of Children Mark
-	.byte	5                               # Abbrev [5] 0x54:0x5 DW_TAG_pointer_type
-	.word	35                              # DW_AT_type
+	.byte	6                               # Abbrev [6] 0x54:0x5 DW_TAG_pointer_type
+	.word	39                              # DW_AT_type
 	.byte	0                               # End Of Children Mark
 .Ldebug_info_end0:
 	.section	.debug_str_offsets,"",@progbits

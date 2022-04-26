@@ -3,8 +3,6 @@ hmdst rd, rs1, rs2			0000101	....	....	001	....	0110011
 	It directly count the different bits between rs1 and rs2
 
 
-
-
 pkg rd, rs1, rs2			0000100	....	....	100	....	0110011
 
 	It writes the most significiant half of rs2 to same place of rd and the least significiant half of rs1 to same place of rd.
@@ -31,15 +29,3 @@ cntp rd, rs1				0110000	00010	....	001	....	0010011
 
 
 	It counts the ones in rs1. Then, it writes to rd.
-
-
-I build the backend by this code in the file that I wanna build llvm backend.
-cmake -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=RISCV -G Ninja ../llvm
-ninja llc
-
-I compiled any code by using these two codes.
-first code produce ll file second code produced the assembly file.
-/home/llvm/Downloads/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-14 -target riscv32-linux-gnu -S -emit-llvm -g madd.c
-/home/llvm/llvm-project/FirstTrial/bin/llc -mtriple=riscv32 madd.ll
-
-if you want to see the Instruction graph add -view-isel-dags flag to llc by compiling ll code.
