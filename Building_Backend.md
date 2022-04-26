@@ -2,7 +2,7 @@
 
 To write a backend I generally used the [slide](https://speakerdeck.com/asb/llvm-backend-development-by-example-risc-v) by Alex Bradbury.
 I asked any question to the [LLVM website in the Beginners part](https://discourse.llvm.org/c/beginners/17).
-I used the file `RISCVInstrInfo.td`to define both instruction and pattern. The directory of this file is `/llvm-project/llvm/lib/Target/RISCV`.
+I used the file `RISCVInstrInfo.td`to define both instruction and pattern. The directory of this file is `/llvm-project/llvm/lib/Target/RISCV`. I also used the file `RISCVISelLowering.cpp` to use intrinsic function in the selection pattern. I add my codes at the end of files generally. If it is not the case as happen in `RISCVISelLowering.cpp`, I add a comment at the end of line that `I add this line`. So you can serach and find it(only several lines inside of it.).
 I used some the instructions for custom backend from [this page](https://raw.githubusercontent.com/riscv/riscv-bitmanip/master/bitmanip-draft.pdf).
 The added instructions are in the end of the [RISCVInstrInfo.td](https://github.com/omerguzelelectronicguy/CustomRISC-V_LLVM_Backend/blob/main/RISCVInstrInfo.td)
 
