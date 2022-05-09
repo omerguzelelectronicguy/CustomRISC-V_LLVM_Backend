@@ -1,6 +1,7 @@
 # CustomRISC-V_LLVM_Backend
 I am a beginner for LLVM Backend. I explained the steps and progress in a beginner side of view. In this work, there might be mistakes or unnecessary parts that are not serve the actual porpuse. I'm always happy with any warning or changes about mistakes.
 This work includes the compiler of RISCV CPU, Vector Support for RISCV CPU, and LLVM Backend for RISCV for custom instructions. I tried to explain them in different files in the main directory. I still left a general LLVM build for the main page below.
+This is the [video list](https://youtube.com/playlist?list=PLmYxcbArBw8KSbRKC6H-R9508Cegj8Y4S) (in Turkish I will share English later) that you find the explaination for the proceses.
 
 ## How to build?
 
