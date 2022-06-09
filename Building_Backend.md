@@ -27,3 +27,15 @@ First code produce ll file second code produced the assembly file.
 `-Os ` is to run llvm optimizer. It will add instrinsic functions to the IR. It is useful because you can use that functions in your backend to define you pattern in an easier way.
 `-target riscv32-linux-gnu` is to tell the target to the clang because it produced different IR for different targets. Thank's for Mr. Northover for their great [help](https://discourse.llvm.org/t/llvm-backend-code-compilation/61646/2).
 `-view-isel-dags` shows the graph representation of your C code. It is useful to see the result of optimization on the DAG. the instruction pattern that you wrote for Backend should match the graph.
+The other graph visualization flags are below:
+
+-view-dag-combine1-dags displays the DAG after being built, before the first optimization pass.
+
+-view-legalize-dags displays the DAG before Legalization.
+
+-view-dag-combine2-dags displays the DAG before the second optimization pass.
+
+-view-isel-dags displays the DAG before the Select phase.
+
+-view-sched-dags displays the DAG before Scheduling.
+
