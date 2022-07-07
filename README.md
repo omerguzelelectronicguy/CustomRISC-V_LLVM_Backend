@@ -31,6 +31,7 @@ In the llvm-project type these command:
 ```
     mkdir build
     cd build
+    sudo apt-get install build-essential
     cmake -DLLVM_TARGETS_TO_BUILD="RISCV" -DCMAKE_BUILD_TYPE="Release" -DLLVM_ENABLE_PROJECTS="clang;lld" -G Ninja ../llvm
 ```
 
