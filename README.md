@@ -23,7 +23,7 @@ install these
 Assume that you download the source code in a folder 'llvm-project'. or you can clone it by the command below
 
 `
-clone llvm-project
+git clone https://github.com/llvm/llvm-project.git
 `    
 
 In the llvm-project type these command:
