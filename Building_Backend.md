@@ -39,3 +39,5 @@ The other graph visualization flags are below:
 
 -view-sched-dags displays the DAG before Scheduling.
 
+# Possible problems
+When we tried a lot of way and compiler framework to write backend, it is possible to conflict the projects that we tried previously. It is simple but be sure that you are running the `clang` and `llc` from right directory that you build backend. For example, If you just call `clang test.c` or `llc` test.ll you may face this problem. or you should check by typing `whereis clang` and `whereis llc` to see the directory of them.
